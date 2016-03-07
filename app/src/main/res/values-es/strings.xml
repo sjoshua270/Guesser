@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Guesser</string>
+    <string name="got_it">Eso es!</string>
+    <string name="higher">Es mas de</string>
+    <string name="instructions">Trata de adivinar qué número estoy pensando</string>
+    <string name="lower">Es menos de</string>
+    <string name="not_valid">Por favor, entre algo valido</string>
+    <string name="restart">Otra ves</string>
+    <string name="submit">Enviar</string>
+</resources>
