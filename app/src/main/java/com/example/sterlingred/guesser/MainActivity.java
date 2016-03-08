@@ -97,10 +97,9 @@ public class MainActivity extends AppCompatActivity {
         if (numGuesses > maxGuesses) locked = true;
         if (!locked) {
             String message;
-            int rating;
             HashMap<String, Integer> results = answerChecker.compare(guess);
             int difference = results.get("difference");
-            rating = results.get("rating");
+            int rating = results.get("rating");
             if (difference < 0)
                 message = getResources().getString(R.string.lower);
             else if (difference > 0)
@@ -108,12 +107,11 @@ public class MainActivity extends AppCompatActivity {
             else
                 message = getResources().getString(R.string.got_it);
             add(new HistoryItem(message, guess, rating));
+            if (difference == 0)
+                resetGame();
         } else {
-            locked = false;
             add(new HistoryItem(getString(R.string.max_guesses)));
-            answerChecker = new Checker((int) (Math.random() * 100));
-            add(new HistoryItem(getResources().getString(R.string.instructions)));
-            guessField.setText("");
+            resetGame();
         }
         // Resets the guessField to an empty value
         guessField.setText("");
@@ -135,6 +133,13 @@ public class MainActivity extends AppCompatActivity {
         mLayoutManager.scrollToPosition(history.size() - 1);
     }
 
+    private void resetGame() {
+        locked = false;
+        answerChecker = new Checker((int) (Math.random() * 100));
+        add(new HistoryItem(getResources().getString(R.string.instructions)));
+        guessField.setText("");
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -147,10 +152,7 @@ public class MainActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.restart:
-                locked = false;
-                answerChecker = new Checker((int) (Math.random() * 100));
-                add(new HistoryItem(getResources().getString(R.string.instructions)));
-                guessField.setText("");
+                resetGame();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
