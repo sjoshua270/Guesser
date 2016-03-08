@@ -7,10 +7,18 @@ package com.example.sterlingred.guesser.objects;
 public class HistoryItem {
     private final String message;
     private final int guess;
+    private final int rating;
 
-    public HistoryItem(String message, int guess) {
+    public HistoryItem(String message, int guess, int rating) {
         this.message = message;
         this.guess = guess;
+        this.rating = rating;
+    }
+
+    public HistoryItem(String message) {
+        this.message = message;
+        guess = -1;
+        rating = 0;
     }
 
     @Override
@@ -24,5 +32,9 @@ public class HistoryItem {
 
     public int getGuess() {
         return guess;
+    }
+
+    public int getRating() {
+        return rating;
     }
 }

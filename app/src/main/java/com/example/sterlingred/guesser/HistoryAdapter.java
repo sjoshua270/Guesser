@@ -32,7 +32,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     public void onBindViewHolder(HistoryAdapter.ViewHolder holder, int position) {
         HistoryItem item = history.get(position);
         if (item.getGuess() > -1)
-            holder.textView.setText(String.format(Locale.getDefault(), "%s %d", item.getMessage(), item.getGuess()));
+            holder.textView.setText(String.format(Locale.getDefault(), "%s %d, Rating: %d", item.getMessage(), item.getGuess(), item.getRating()));
         else
             holder.textView.setText(item.getMessage());
     }

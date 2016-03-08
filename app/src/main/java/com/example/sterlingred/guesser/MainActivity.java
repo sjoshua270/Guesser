@@ -15,6 +15,7 @@ import android.widget.EditText;
 import com.example.sterlingred.guesser.objects.HistoryItem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         mLayoutManager.setStackFromEnd(true);
         answerHistView.setLayoutManager(mLayoutManager);
         answerHistView.setAdapter(historyAdapter);
-        add(new HistoryItem(getResources().getString(R.string.instructions), -1));
+        add(new HistoryItem(getResources().getString(R.string.instructions)));
         submitButton.setOnClickListener(getSubmitListener());
         if (toolbar != null)
             setSupportActionBar(toolbar);
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                     int guess = Integer.parseInt(holder);
                     checkGuess(guess);
                 } else {
-                    add(new HistoryItem(getResources().getString(R.string.not_valid), -1));
+                    add(new HistoryItem(getResources().getString(R.string.not_valid)));
                 }
             }
         };
@@ -89,13 +90,16 @@ public class MainActivity extends AppCompatActivity {
      */
     private void checkGuess(int guess) {
         String message;
-        if (answerChecker.compare(guess) > 0)
+        HashMap<String, Integer> results = answerChecker.compare(guess);
+        int difference = results.get("difference");
+        int rating = results.get("rating");
+        if (difference < 0)
             message = getResources().getString(R.string.lower);
-        else if (answerChecker.compare(guess) < 0)
+        else if (difference > 0)
             message = getResources().getString(R.string.higher);
         else
             message = getResources().getString(R.string.got_it);
-        add(new HistoryItem(message, guess));
+        add(new HistoryItem(message, guess, rating));
         // Resets the guessField to an empty value
         guessField.setText("");
     }
@@ -129,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.restart:
                 answerChecker = new Checker((int) (Math.random() * 100));
-                add(new HistoryItem(getResources().getString(R.string.instructions), -1));
+                add(new HistoryItem(getResources().getString(R.string.instructions)));
                 guessField.setText("");
                 return true;
             default:
