@@ -20,12 +20,11 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Boolean locked;
     private Button submitButton;
     private Checker answerChecker;
     private EditText guessField;
     private HistoryAdapter historyAdapter;
-    private Integer maxGuesses, maxHistory, numGuesses;
+    private Integer maxHistory, remainingGuesses, startingGuesses;
     private List<HistoryItem> history;
     private RecyclerView answerHistView;
     private LinearLayoutManager mLayoutManager;
@@ -44,11 +43,10 @@ public class MainActivity extends AppCompatActivity {
         guessField = (EditText) findViewById(R.id.guess_field);
         history = new ArrayList<>();
         historyAdapter = new HistoryAdapter(history);
-        locked = false;
-        maxGuesses = 5;
         maxHistory = 10;
         mLayoutManager = new LinearLayoutManager(this);
-        numGuesses = 0;
+        startingGuesses = 5;
+        remainingGuesses = startingGuesses;
         submitButton = (Button) findViewById(R.id.submit);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -93,24 +91,22 @@ public class MainActivity extends AppCompatActivity {
      * @param guess the value that was guessed
      */
     private void checkGuess(int guess) {
-        numGuesses++;
-        if (!locked) {
-            String message;
-            HashMap<String, Integer> results = answerChecker.compare(guess);
-            int difference = results.get("difference");
-            int rating = results.get("rating");
-            if (difference < 0)
-                message = getResources().getString(R.string.lower);
-            else if (difference > 0)
-                message = getResources().getString(R.string.higher);
-            else
-                message = getResources().getString(R.string.got_it);
-            add(new HistoryItem(message, guess, rating));
-            if (difference == 0)
-                resetGame();
-        }
-        if (numGuesses > maxGuesses) {
-            locked = true;
+        remainingGuesses--;
+        String message;
+        HashMap<String, Integer> results = answerChecker.compare(guess);
+        int difference = results.get("difference");
+        int rating = results.get("rating");
+        if (difference < 0)
+            message = getResources().getString(R.string.lower);
+        else if (difference > 0)
+            message = getResources().getString(R.string.higher);
+        else
+            message = getResources().getString(R.string.got_it);
+        add(new HistoryItem(message, guess, rating));
+
+        if (difference == 0)
+            resetGame();
+        else if (remainingGuesses <= 0) {
             add(new HistoryItem(getString(R.string.max_guesses)));
             resetGame();
         }
@@ -135,8 +131,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void resetGame() {
-        locked = false;
-        numGuesses = 0;
+        remainingGuesses = startingGuesses;
         answerChecker = new Checker((int) (Math.random() * 100));
         add(new HistoryItem(getResources().getString(R.string.instructions)));
         guessField.setText("");
