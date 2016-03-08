@@ -94,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private void checkGuess(int guess) {
         numGuesses++;
-        if (numGuesses > maxGuesses) locked = true;
         if (!locked) {
             String message;
             HashMap<String, Integer> results = answerChecker.compare(guess);
@@ -109,7 +108,9 @@ public class MainActivity extends AppCompatActivity {
             add(new HistoryItem(message, guess, rating));
             if (difference == 0)
                 resetGame();
-        } else {
+        }
+        if (numGuesses > maxGuesses) {
+            locked = true;
             add(new HistoryItem(getString(R.string.max_guesses)));
             resetGame();
         }
@@ -135,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void resetGame() {
         locked = false;
+        numGuesses = 0;
         answerChecker = new Checker((int) (Math.random() * 100));
         add(new HistoryItem(getResources().getString(R.string.instructions)));
         guessField.setText("");
