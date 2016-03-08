@@ -9,5 +9,5 @@
     <string name="restart">Restart</string>
     <string name="guess">Guess</string>
 
-    <string name="max_guesses">You have reached your maximum number of guesses. Restarting…</string>
+    <string name="max_guesses">You ran out of guesses!</string>
 </resources>
